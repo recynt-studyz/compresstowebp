@@ -121,7 +121,7 @@ export default function Home() {
 
         {/* Logo */}
         <span
-          className="absolute top-5 left-5 z-20 font-mono font-semibold text-white text-sm"
+          className="absolute top-5 left-5 z-20 font-mono font-semibold tracking-tight text-white text-lg sm:text-xl"
           style={{ textShadow: '0 1px 3px rgba(0,0,0,0.4)' }}
         >
           compresstowebp
