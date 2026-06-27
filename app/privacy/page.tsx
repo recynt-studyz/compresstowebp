@@ -80,12 +80,6 @@ export default function Privacy() {
             </p>
           </section>
 
-          <section>
-            <h2 className="text-base font-semibold text-gray-800 mb-2">Contact</h2>
-            <p>
-              Questions about this policy? Contact us at recyntstudyz [at] gmail [dot] com.
-            </p>
-          </section>
         </div>
       </main>
       <Footer />
