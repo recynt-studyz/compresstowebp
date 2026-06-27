@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: 'About — CompressToWebP',
   description:
     'CompressToWebP is a free, browser-based tool for converting and compressing images to WebP format with no upload required.',
+  alternates: {
+    canonical: 'https://compresstowebp.com/about',
+  },
 }
 
 export default function About() {

@@ -1,43 +1,43 @@
 const faqs = [
   {
     q: 'What is WebP and why should I use it?',
-    a: 'WebP is a modern image format developed by Google that provides superior compression for web images. WebP files are typically 25–35% smaller than comparable JPEG and PNG files at the same visual quality, which means faster page loads and lower bandwidth usage. All modern browsers support WebP, making it the best default format for web images.',
+    a: 'WebP is a modern image format developed by Google that delivers superior compression for web images. When you compress to WebP, files are typically 25–35% smaller than equivalent JPEG or PNG at the same visual quality — which means faster page loads, lower bandwidth costs, and better Core Web Vitals scores. All modern browsers support WebP, making it the best default format for images on the web.',
   },
   {
     q: 'How do I convert JPG to WebP?',
-    a: 'Drag and drop your JPG files onto the upload area above, make sure "Convert to WebP" mode is selected, and adjust the quality slider if desired (85 is a good default). The conversion happens instantly in your browser — no upload required.',
+    a: 'Using this free JPG to WebP converter is simple: drag and drop your JPG files onto the upload zone above, make sure "Convert to WebP" mode is selected, and adjust the quality slider if needed (85 is a good default). The conversion runs instantly in your browser — no upload, no server, no waiting. PNG to WebP works the same way.',
   },
   {
     q: 'How do I compress an image to a specific file size like 100KB?',
-    a: 'Switch to "Compress to Size" mode, upload your image, then type your target size (e.g. 100) in the KB field. The tool uses binary search on the WebP quality parameter to automatically find the quality level that produces a file as close to your target as possible.',
+    a: 'Switch to "Compress to Size" mode, upload your image, and type your target in the KB field (e.g. 100 to compress image to 100KB). This WebP image compressor uses binary search over quality levels to automatically find the highest quality that still fits under your target — a technique that beats manual guessing every time. Great for compressing images for web upload limits, email attachments, or CMS restrictions.',
   },
   {
     q: 'Are my images uploaded to a server?',
-    a: 'No. All processing happens 100% in your browser using the native Canvas API. Your images never leave your device and are never sent to any server. You can disconnect from the internet after the page loads and the tool will still work.',
+    a: 'No. This tool is a fully client-side WebP converter — all processing happens in your browser using the native Canvas API. Your images never leave your device and are never sent to any server. You can disconnect from the internet after the page loads and the tool will still work perfectly.',
   },
   {
     q: 'Will converting to WebP reduce image quality?',
-    a: 'WebP uses lossy compression by default, so some quality reduction is possible. However, at quality 80–90 the difference is barely perceptible. WebP\'s algorithm is more efficient than JPEG, so you can achieve similar perceived quality at a lower file size.',
+    a: 'WebP uses lossy compression by default, so some quality reduction is expected. However, at quality 80–90 the difference is barely perceptible to the human eye. Because the WebP codec is more efficient than JPEG, you often get better perceived quality at a smaller file size — making it the ideal format when compressing images for web use.',
   },
   {
     q: 'Does WebP work in all browsers?',
-    a: 'Yes. WebP is supported in Chrome, Firefox, Safari (since v14), Edge, Opera, and all modern mobile browsers. As of 2024, WebP support covers over 97% of global browser usage.',
+    a: 'Yes. WebP is supported in Chrome, Firefox, Safari (since v14), Edge, Opera, and all modern mobile browsers. As of 2024, WebP support covers over 97% of global browser usage, so you can safely compress to WebP for any public website without worrying about compatibility.',
   },
   {
     q: 'Can I convert multiple images at once?',
-    a: 'Yes! Drag and drop up to 50 files at once. All images are processed simultaneously in your browser. When 2 or more files are done, a "Download All as ZIP" button appears so you can grab everything in one click.',
+    a: 'Yes! This bulk WebP converter lets you drag and drop up to 50 files at once. All images are processed simultaneously in your browser. When 2 or more files are done, a "Download All as ZIP" button appears so you can grab everything in one click — perfect for batch converting a whole folder of JPGs or PNGs to WebP.',
   },
   {
     q: 'What image formats are supported?',
-    a: 'CompressToWebP accepts JPG, JPEG, PNG, GIF, WebP, and BMP files. All are converted to WebP output. The tool uses your browser\'s built-in image decoding, so any format your browser can display can be converted.',
+    a: 'This free WebP converter and image compressor accepts JPG, JPEG, PNG, GIF, WebP, and BMP files as input. All are converted to WebP output. The tool relies on your browser\'s built-in image decoding, so any format your browser can display can be converted — no plugins or extensions required.',
   },
   {
     q: 'How much smaller will my WebP files be?',
-    a: 'Results vary by content and settings, but in general: JPG photos save 20–35%, and PNG graphics save 30–60%. The exact savings depend on image complexity and your quality setting. The before/after file size is shown on each file card.',
+    a: 'Results depend on image content and your quality setting, but typical savings when you compress images for web are: JPG photos 20–35% smaller, PNG graphics 30–60% smaller. The before/after file size and percentage reduction are shown on each file card after conversion. Use the "Compress to Size" mode if you need to hit a specific KB target like 100KB or 200KB.',
   },
   {
     q: 'Is compresstowebp.com completely free?',
-    a: 'Yes, completely free with no limits. There\'s no signup, no account required, no watermarks, and no limit on file size. The 50-file batch limit is a soft limit per session. The site is supported by advertising.',
+    a: 'Yes, completely free with no limits. There\'s no signup, no account required, no watermarks on output files, and no cap on individual file size. The 50-file batch soft limit applies per session. This free WebP converter is supported by advertising so it can stay free for everyone.',
   },
 ]
 

@@ -4,6 +4,9 @@ import Footer from '@/components/Footer'
 export const metadata: Metadata = {
   title: 'Privacy Policy — CompressToWebP',
   description: 'Privacy policy for compresstowebp.com. Your images are never uploaded or stored.',
+  alternates: {
+    canonical: 'https://compresstowebp.com/privacy',
+  },
 }
 
 export default function Privacy() {

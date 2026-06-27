@@ -38,8 +38,9 @@ export const metadata: Metadata = {
     description:
       'Convert JPG, PNG and GIF to WebP instantly in your browser. No upload required.',
   },
-  other: {
-    'google-adsense-account': 'ca-pub-8792838105001561',
+  robots: {
+    index: true,
+    follow: true,
   },
 }
 
