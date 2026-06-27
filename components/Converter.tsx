@@ -4,6 +4,23 @@ import { useState, useCallback, useRef, useEffect } from 'react'
 import FileCard, { ProcessedFile } from './FileCard'
 
 type Mode = 'convert' | 'compress'
+type Preset = 'web' | 'email' | 'print' | null
+
+function qualityLabel(q: number): string {
+  if (q <= 40) return 'Low quality · smallest file'
+  if (q <= 60) return 'Medium quality · good balance'
+  if (q <= 80) return 'High quality · recommended'
+  if (q <= 94) return 'Very high quality · large file'
+  return 'Maximum quality · near lossless'
+}
+
+function qualityReduction(q: number): string {
+  if (q <= 40) return '~85%'
+  if (q <= 60) return '~75%'
+  if (q <= 80) return '~65%'
+  if (q <= 94) return '~45%'
+  return '~20%'
+}
 
 const ACCEPTED_MIME = new Set([
   'image/jpeg',
@@ -77,7 +94,8 @@ async function compressToSize(file: File, targetKB: number): Promise<Blob> {
 
 export default function Converter() {
   const [mode, setMode] = useState<Mode>('convert')
-  const [quality, setQuality] = useState(85)
+  const [quality, setQuality] = useState(80)
+  const [preset, setPreset] = useState<Preset>(null)
   const [targetKB, setTargetKB] = useState(100)
   const [files, setFiles] = useState<ProcessedFile[]>([])
   const [dragging, setDragging] = useState(false)
@@ -224,18 +242,57 @@ export default function Converter() {
 
       {/* Settings row */}
       {mode === 'convert' && (
-        <div className="mb-3 flex items-center gap-4">
-          <label className="text-sm font-medium text-gray-700 shrink-0">
-            Quality:{' '}
-            <span className="text-[#2563EB] font-semibold">{quality}</span>
-          </label>
+        <div className="mb-3 space-y-2">
+          {/* Preset buttons */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-gray-400 shrink-0">Preset:</span>
+            {(
+              [
+                { id: 'web', label: 'Web', value: 75 },
+                { id: 'email', label: 'Email', value: 60 },
+                { id: 'print', label: 'Print', value: 90 },
+              ] as const
+            ).map((p) => (
+              <button
+                key={p.id}
+                onClick={() => {
+                  setQuality(p.value)
+                  setPreset(p.id)
+                }}
+                className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
+                  preset === p.id
+                    ? 'bg-[#2563EB] text-white'
+                    : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                }`}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Quality label row */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="text-sm font-medium text-gray-700 shrink-0">Quality:</span>
+              <span className="text-[#2563EB] font-semibold text-sm shrink-0">{quality}</span>
+              <span className="text-xs text-gray-500 truncate">{qualityLabel(quality)}</span>
+            </div>
+            <span className="text-xs font-medium text-green-600 shrink-0 ml-2">
+              {qualityReduction(quality)} smaller
+            </span>
+          </div>
+
+          {/* Slider */}
           <input
             type="range"
             min={1}
             max={100}
             value={quality}
-            onChange={(e) => setQuality(Number(e.target.value))}
-            className="flex-1 accent-[#2563EB]"
+            onChange={(e) => {
+              setQuality(Number(e.target.value))
+              setPreset(null)
+            }}
+            className="w-full accent-[#2563EB]"
           />
         </div>
       )}
