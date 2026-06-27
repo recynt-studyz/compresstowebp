@@ -119,6 +119,14 @@ export default function Home() {
         {/* Bottom fade to white */}
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-white" />
 
+        {/* Logo */}
+        <span
+          className="absolute top-5 left-5 z-20 font-mono font-semibold text-white text-sm"
+          style={{ textShadow: '0 1px 3px rgba(0,0,0,0.4)' }}
+        >
+          compresstowebp
+        </span>
+
         {/* Hero text */}
         <div className="relative z-10 max-w-3xl mx-auto px-4 pt-14 pb-6 text-center">
           <div className="inline-flex items-center gap-1.5 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 px-3 py-1 text-xs text-white mb-5 shadow-sm">
