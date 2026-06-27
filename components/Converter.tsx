@@ -199,7 +199,7 @@ export default function Converter() {
   return (
     <div className="w-full max-w-2xl mx-auto">
       {/* Mode toggle */}
-      <div className="flex rounded-xl bg-gray-100 p-1 mb-5">
+      <div className="flex rounded-xl bg-gray-100 p-1 mb-2.5">
         <button
           onClick={() => setMode('convert')}
           className={`flex-1 rounded-lg py-2.5 text-sm font-semibold transition ${
@@ -224,7 +224,7 @@ export default function Converter() {
 
       {/* Settings row */}
       {mode === 'convert' && (
-        <div className="mb-5 flex items-center gap-4">
+        <div className="mb-3 flex items-center gap-4">
           <label className="text-sm font-medium text-gray-700 shrink-0">
             Quality:{' '}
             <span className="text-[#2563EB] font-semibold">{quality}</span>
@@ -241,7 +241,7 @@ export default function Converter() {
       )}
 
       {mode === 'compress' && (
-        <div className="mb-5 flex items-center gap-3">
+        <div className="mb-3 flex items-center gap-3">
           <label className="text-sm font-medium text-gray-700 shrink-0">Target size:</label>
           <div className="flex items-center rounded-lg border border-gray-200 bg-white">
             <input
@@ -266,7 +266,7 @@ export default function Converter() {
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onClick={() => fileInputRef.current?.click()}
-        className={`relative flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 py-12 text-center transition ${
+        className={`relative flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 py-8 text-center transition ${
           dragging
             ? 'border-[#2563EB] bg-blue-50'
             : 'border-gray-200 bg-gray-50 hover:border-[#2563EB] hover:bg-blue-50/40'

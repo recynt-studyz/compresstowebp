@@ -108,39 +108,58 @@ export default function Home() {
       />
 
       {/* Hero */}
-      <section className="bg-[#F8FAFC] border-b border-gray-100">
-        <div className="max-w-3xl mx-auto px-4 pt-14 pb-12 text-center">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-white border border-gray-200 px-3 py-1 text-xs text-gray-500 mb-6 shadow-sm">
+      <section className="relative overflow-hidden border-b border-gray-100">
+        {/* Background image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url('/hero-bg.jpg')" }}
+        />
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/15" />
+        {/* Bottom fade to white */}
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-white" />
+
+        {/* Hero text */}
+        <div className="relative z-10 max-w-3xl mx-auto px-4 pt-14 pb-6 text-center">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 px-3 py-1 text-xs text-white mb-5 shadow-sm">
             <span>🔒</span>
             <span>Files never leave your browser</span>
           </div>
-          <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl">
-            Convert &amp; Compress Images<br className="hidden sm:block" /> to{' '}
-            <span className="text-[#2563EB]">WebP</span>
-          </h1>
-          <p className="mt-4 text-lg text-gray-500 max-w-xl mx-auto">
-            Convert JPG, PNG, and GIF to WebP — or compress to an exact KB target. Instant,
-            free, and 100% in your browser.
-          </p>
 
-          <div className="mt-6">
+          {/* Frosted text card */}
+          <div className="inline-block bg-black/20 backdrop-blur-sm rounded-2xl px-6 py-3">
+            <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
+              Convert &amp; Compress Images<br className="hidden sm:block" /> to{' '}
+              <span className="text-blue-200">WebP</span>
+            </h1>
+            <p className="mt-3 text-lg text-white/80 max-w-xl mx-auto">
+              Convert JPG, PNG, and GIF to WebP — or compress to an exact KB target. Instant,
+              free, and 100% in your browser.
+            </p>
+          </div>
+
+          <div className="mt-5">
             <AdBanner slot="1234567890" />
           </div>
         </div>
 
-        <div className="max-w-3xl mx-auto px-4 pb-14">
-          <ConverterWrapper />
+        {/* Converter card */}
+        <div className="relative z-10 max-w-3xl mx-auto px-4 pb-16">
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl px-6 pt-4 pb-6">
+            <ConverterWrapper />
+          </div>
         </div>
       </section>
 
       {/* Below converter */}
       <section className="bg-white">
-        <div className="max-w-3xl mx-auto px-4 pt-8 pb-4">
+        {/* Ad slot — needs room to render */}
+        <div className="max-w-3xl mx-auto px-4 pt-10 pb-4 min-h-[120px]">
           <AdBanner slot="0987654321" />
         </div>
 
         {/* Trust signals */}
-        <div className="max-w-3xl mx-auto px-4 pb-12">
+        <div className="max-w-3xl mx-auto px-4 pt-6 pb-12">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
               { icon: '🔒', label: 'No Upload', sub: 'Stays on your device' },
