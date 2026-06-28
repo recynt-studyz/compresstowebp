@@ -39,6 +39,10 @@ const faqs = [
     q: 'Is compresstowebp.com completely free?',
     a: 'Yes, completely free with no limits. There\'s no signup, no account required, no watermarks on output files, and no cap on individual file size. The 50-file batch soft limit applies per session. This free WebP converter is supported by advertising so it can stay free for everyone.',
   },
+  {
+    q: 'Is this a good Squoosh alternative?',
+    a: 'Yes. compresstowebp.com offers several advantages over Squoosh — bulk processing of multiple images simultaneously, a target file size mode that automatically finds the right quality level, and WebP compression that often produces better quality output at equivalent file sizes. If you need to compress a single image with advanced codec options, Squoosh is excellent. If you need to compress multiple images quickly or hit a specific file size target, compresstowebp.com is the faster choice.',
+  },
 ]
 
 export default function FAQ() {
