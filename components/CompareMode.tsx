@@ -72,7 +72,8 @@ export default function CompareMode() {
     return () => handle.removeEventListener('touchstart', onTouchStart)
   }, [imageLoaded]) // re-register after imageLoaded (handle mounts then)
 
-  const renderPreview = useCallback(async (q: number) => {
+  const renderPreview = useCallback(async () => {
+    const q = qualityRef.current  // always read current value — avoids stale closure
     const origImg = originalImageRef.current
     const previewCanvas = previewCanvasRef.current
     if (!origImg || !previewCanvas) { setRendering(false); return }
@@ -84,6 +85,7 @@ export default function CompareMode() {
     offscreen.getContext('2d')!.drawImage(origImg, 0, 0, offscreen.width, offscreen.height)
 
     // Step 2: compress to blob
+    console.log(`Quality ${q}: rendering...`)
     const blob = await new Promise<Blob | null>((resolve) =>
       offscreen.toBlob(resolve, 'image/webp', q / 100)
     )
@@ -113,13 +115,13 @@ export default function CompareMode() {
     // Step 5: cleanup
     URL.revokeObjectURL(url)
     setRendering(false)
-  }, [])
+  }, []) // no quality dependency — reads from qualityRef
 
   const debouncedRenderPreview = useCallback(
-    (q: number) => {
+    () => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
       setRendering(true) // show loading state immediately on slider move
-      debounceRef.current = setTimeout(() => renderPreview(q), DEBOUNCE_MS)
+      debounceRef.current = setTimeout(() => renderPreview(), DEBOUNCE_MS)
     },
     [renderPreview]
   )
@@ -178,7 +180,7 @@ export default function CompareMode() {
         prevCanvas.height = h
       }
 
-      await renderPreview(qualityRef.current)
+      await renderPreview()
     },
     [renderPreview]
   )
@@ -547,9 +549,10 @@ export default function CompareMode() {
             <button
               key={p.id}
               onClick={() => {
+                qualityRef.current = p.value
                 setQuality(p.value)
                 setPreset(p.id)
-                debouncedRenderPreview(p.value)
+                debouncedRenderPreview()
               }}
               className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
                 preset === p.id
@@ -577,9 +580,10 @@ export default function CompareMode() {
           value={quality}
           onChange={(e) => {
             const q = Number(e.target.value)
+            qualityRef.current = q
             setQuality(q)
             setPreset(null)
-            debouncedRenderPreview(q)
+            debouncedRenderPreview()
           }}
           className="w-full accent-[#2563EB]"
         />
