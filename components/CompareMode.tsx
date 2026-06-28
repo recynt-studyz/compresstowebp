@@ -46,7 +46,6 @@ export default function CompareMode() {
   const containerRef = useRef<HTMLDivElement>(null)
   const sourceCanvasRef = useRef<HTMLCanvasElement | null>(null)
   const currentBlobRef = useRef<Blob | null>(null)
-  const previewUrlRef = useRef<string | null>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const isDraggingHandleRef = useRef(false)
@@ -55,7 +54,6 @@ export default function CompareMode() {
 
   useEffect(() => {
     return () => {
-      if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current)
       if (debounceRef.current) clearTimeout(debounceRef.current)
     }
   }, [])
@@ -65,28 +63,35 @@ export default function CompareMode() {
     const preview = previewCanvasRef.current
     if (!src || !preview) return
 
+    // Fresh offscreen canvas from source on every call
+    const offscreen = document.createElement('canvas')
+    offscreen.width = src.width
+    offscreen.height = src.height
+    offscreen.getContext('2d')!.drawImage(src, 0, 0)
+
     const blob = await new Promise<Blob | null>((resolve) =>
-      src.toBlob(resolve, 'image/webp', q / 100)
+      offscreen.toBlob(resolve, 'image/webp', q / 100)
     )
     if (!blob) return
+
+    console.log(`Quality ${q}: ${blob.size} bytes`)
 
     currentBlobRef.current = blob
     setCompressedSize(blob.size)
 
-    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current)
+    // Revoke URL immediately after drawing — no cross-render URL state
     const url = URL.createObjectURL(blob)
-    previewUrlRef.current = url
-
     const img = new Image()
     img.src = url
     await new Promise<void>((resolve) => {
       img.onload = () => resolve()
     })
+    URL.revokeObjectURL(url)
 
     const ctx = preview.getContext('2d')
     if (!ctx) return
     ctx.clearRect(0, 0, preview.width, preview.height)
-    ctx.drawImage(img, 0, 0)
+    ctx.drawImage(img, 0, 0, preview.width, preview.height)
   }, [])
 
   const debouncedRenderPreview = useCallback(
@@ -99,10 +104,6 @@ export default function CompareMode() {
 
   const loadImage = useCallback(
     async (file: File) => {
-      if (previewUrlRef.current) {
-        URL.revokeObjectURL(previewUrlRef.current)
-        previewUrlRef.current = null
-      }
       currentBlobRef.current = null
 
       const fileUrl = URL.createObjectURL(file)
@@ -231,10 +232,6 @@ export default function CompareMode() {
   }
 
   function handleChangeImage() {
-    if (previewUrlRef.current) {
-      URL.revokeObjectURL(previewUrlRef.current)
-      previewUrlRef.current = null
-    }
     currentBlobRef.current = null
     sourceCanvasRef.current = null
     setImageLoaded(false)
