@@ -134,10 +134,7 @@ export default function Home() {
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-gray-100">
         {/* Background image */}
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/hero-bg.jpg')" }}
-        />
+        <div className="absolute inset-0 hero-section" />
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/15" />
         {/* Bottom fade to white */}

@@ -19,3 +19,18 @@ body {
 details summary::-webkit-details-marker {
   display: none;
 }
+
+.hero-section {
+  background-image: url('/hero-bg.webp');
+  background-size: cover;
+  background-position: center;
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    background-image: url('/hero-bg.webp');
+    background-size: cover;
+    background-position: center top;
+    background-attachment: scroll;
+  }
+}

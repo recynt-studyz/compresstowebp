@@ -31,12 +31,21 @@ export const metadata: Metadata = {
     url: 'https://compresstowebp.com',
     siteName: 'CompressToWebP',
     type: 'website',
+    images: [
+      {
+        url: '/opengraph-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Compress to WebP — Free Image Converter',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Compress to WebP — Free Image Converter & Compressor',
     description:
       'Convert JPG, PNG and GIF to WebP instantly in your browser. No upload required.',
+    images: ['/twitter-image.png'],
   },
   robots: {
     index: true,
@@ -56,6 +65,13 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <head>
         <meta name="google-adsense-account" content="ca-pub-8792838105001561" />
+        <link
+          rel="preload"
+          as="image"
+          href="/hero-bg.webp"
+          type="image/webp"
+          fetchPriority="high"
+        />
       </head>
       <body className="min-h-full flex flex-col bg-white text-gray-900">
         {children}
