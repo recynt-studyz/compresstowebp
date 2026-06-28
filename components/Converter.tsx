@@ -220,36 +220,42 @@ export default function Converter() {
   return (
     <div className="w-full max-w-2xl mx-auto">
       {/* Mode toggle */}
-      <div className="flex rounded-xl bg-gray-100 p-1 mb-2.5">
+      <div
+        className="inline-flex gap-1 rounded-2xl bg-gray-100 p-1.5 mb-2.5 w-full"
+        style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.1)' }}
+      >
         <button
           onClick={() => setMode('convert')}
-          className={`flex-1 rounded-lg py-2.5 text-sm font-semibold transition ${
+          className={`flex-1 rounded-xl px-5 py-2.5 text-sm transition-all duration-150 ${
             mode === 'convert'
-              ? 'bg-white shadow text-[#2563EB]'
-              : 'text-gray-500 hover:text-gray-700'
+              ? 'font-semibold text-white'
+              : 'font-medium text-gray-500 bg-white border border-gray-200 shadow-sm hover:bg-gray-50 hover:text-gray-700 hover:shadow-md'
           }`}
+          style={mode === 'convert' ? { background: '#2563EB', boxShadow: '0 4px 14px rgba(37,99,235,0.4)', transform: 'scale(1.05)' } : undefined}
         >
           Convert to WebP
         </button>
         <button
           onClick={() => setMode('compress')}
-          className={`flex-1 rounded-lg py-2.5 text-sm font-semibold transition ${
+          className={`flex-1 rounded-xl px-5 py-2.5 text-sm transition-all duration-150 ${
             mode === 'compress'
-              ? 'bg-white shadow text-[#2563EB]'
-              : 'text-gray-500 hover:text-gray-700'
+              ? 'font-semibold text-white'
+              : 'font-medium text-gray-500 bg-white border border-gray-200 shadow-sm hover:bg-gray-50 hover:text-gray-700 hover:shadow-md'
           }`}
+          style={mode === 'compress' ? { background: '#2563EB', boxShadow: '0 4px 14px rgba(37,99,235,0.4)', transform: 'scale(1.05)' } : undefined}
         >
           Compress to Size
         </button>
         <button
           onClick={() => setMode('compare')}
-          className={`flex-1 rounded-lg py-2.5 text-sm font-semibold transition ${
+          className={`flex-1 rounded-xl px-5 py-2.5 text-sm transition-all duration-150 ${
             mode === 'compare'
-              ? 'bg-white shadow text-[#2563EB]'
-              : 'text-gray-500 hover:text-gray-700'
+              ? 'font-semibold text-white'
+              : 'font-medium text-gray-500 bg-white border border-gray-200 shadow-sm hover:bg-gray-50 hover:text-gray-700 hover:shadow-md'
           }`}
+          style={mode === 'compare' ? { background: '#2563EB', boxShadow: '0 4px 14px rgba(37,99,235,0.4)', transform: 'scale(1.05)' } : undefined}
         >
-          Compare
+          Before & After
         </button>
       </div>
 

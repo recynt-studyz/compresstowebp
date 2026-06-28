@@ -349,7 +349,7 @@ export default function CompareMode() {
             display: 'block',
             width: '100%',
             height: 'auto',
-            border: '2px solid red', // debug — remove after confirming
+            border: '2px solid #9CA3AF',
           }}
         />
 
@@ -364,7 +364,7 @@ export default function CompareMode() {
             height: '100%',
             display: 'block',
             clipPath: `inset(0 0 0 ${sliderPosition}px)`,
-            border: '2px solid blue', // debug — remove after confirming
+            border: '2px solid #2563EB',
           }}
         />
 
@@ -432,35 +432,15 @@ export default function CompareMode() {
         </div>
 
         {/* Labels */}
-        <div style={{ position: 'absolute', bottom: 8, left: 8, zIndex: 5 }}>
-          <span
-            style={{
-              background: 'rgba(0,0,0,0.5)',
-              backdropFilter: 'blur(4px)',
-              color: 'white',
-              borderRadius: 9999,
-              padding: '3px 9px',
-              fontSize: 11,
-              fontWeight: 600,
-              letterSpacing: '0.01em',
-            }}
-          >
+        <div style={{ position: 'absolute', bottom: 8, left: 8, zIndex: 10 }}>
+          <span className="text-xs px-2 py-0.5 rounded-full font-medium text-white"
+            style={{ background: '#9CA3AF' }}>
             Original
           </span>
         </div>
-        <div style={{ position: 'absolute', bottom: 8, right: 8, zIndex: 5 }}>
-          <span
-            style={{
-              background: 'rgba(0,0,0,0.5)',
-              backdropFilter: 'blur(4px)',
-              color: 'white',
-              borderRadius: 9999,
-              padding: '3px 9px',
-              fontSize: 11,
-              fontWeight: 600,
-              letterSpacing: '0.01em',
-            }}
-          >
+        <div style={{ position: 'absolute', bottom: 8, right: 8, zIndex: 10 }}>
+          <span className="text-xs px-2 py-0.5 rounded-full font-medium text-white"
+            style={{ background: '#2563EB' }}>
             Compressed
           </span>
         </div>
