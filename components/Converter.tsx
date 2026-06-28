@@ -1,9 +1,12 @@
 'use client'
 
 import { useState, useCallback, useRef, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import FileCard, { ProcessedFile } from './FileCard'
 
-type Mode = 'convert' | 'compress'
+const CompareMode = dynamic(() => import('./CompareMode'), { ssr: false })
+
+type Mode = 'convert' | 'compress' | 'compare'
 type Preset = 'web' | 'email' | 'print' | null
 
 function qualityLabel(q: number): string {
@@ -238,6 +241,16 @@ export default function Converter() {
         >
           Compress to Size
         </button>
+        <button
+          onClick={() => setMode('compare')}
+          className={`flex-1 rounded-lg py-2.5 text-sm font-semibold transition ${
+            mode === 'compare'
+              ? 'bg-white shadow text-[#2563EB]'
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          Compare
+        </button>
       </div>
 
       {/* Settings row */}
@@ -317,92 +330,98 @@ export default function Converter() {
         </div>
       )}
 
-      {/* Drop zone */}
-      <div
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onClick={() => fileInputRef.current?.click()}
-        className={`relative flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 py-8 text-center transition ${
-          dragging
-            ? 'border-[#2563EB] bg-blue-50'
-            : 'border-gray-200 bg-gray-50 hover:border-[#2563EB] hover:bg-blue-50/40'
-        }`}
-      >
-        <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#2563EB]/10 text-[#2563EB]">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
+      {mode === 'compare' ? (
+        <CompareMode />
+      ) : (
+        <>
+          {/* Drop zone */}
+          <div
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onClick={() => fileInputRef.current?.click()}
+            className={`relative flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 py-8 text-center transition ${
+              dragging
+                ? 'border-[#2563EB] bg-blue-50'
+                : 'border-gray-200 bg-gray-50 hover:border-[#2563EB] hover:bg-blue-50/40'
+            }`}
           >
-            <polyline points="16 16 12 12 8 16" />
-            <line x1="12" y1="12" x2="12" y2="21" />
-            <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
-          </svg>
-        </div>
-        <p className="text-base font-semibold text-gray-700">
-          Drop images here or <span className="text-[#2563EB]">browse</span>
-        </p>
-        <p className="mt-1 text-sm text-gray-400">JPG, PNG, GIF, WebP, BMP — up to 50 files</p>
-        <input
-          ref={fileInputRef}
-          type="file"
-          multiple
-          accept="image/jpeg,image/png,image/gif,image/webp,image/bmp"
-          className="hidden"
-          onChange={handleFileInput}
-        />
-      </div>
-
-      {limitWarning && (
-        <p className="mt-3 text-sm text-amber-600">
-          Maximum 50 files per batch. Some files were skipped.
-        </p>
-      )}
-
-      {/* File list */}
-      {hasFiles && (
-        <div className="mt-6 space-y-2">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-sm font-medium text-gray-600">
-              {doneFiles.length}/{files.length} converted
-            </p>
-            <button
-              onClick={clearAll}
-              className="text-xs text-gray-400 hover:text-gray-600 transition"
-            >
-              Clear all
-            </button>
-          </div>
-
-          {files.map((pf) => (
-            <FileCard key={pf.id} pf={pf} />
-          ))}
-
-          {doneFiles.length >= 2 && (
-            <button
-              onClick={handleDownloadZip}
-              className="mt-4 w-full flex items-center justify-center gap-2 rounded-xl bg-[#2563EB] py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
-            >
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#2563EB]/10 text-[#2563EB]">
               <svg
-                width="16"
-                height="16"
+                width="24"
+                height="24"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="2.5"
+                strokeWidth="2"
               >
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
+                <polyline points="16 16 12 12 8 16" />
+                <line x1="12" y1="12" x2="12" y2="21" />
+                <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
               </svg>
-              Download All as ZIP ({doneFiles.length} files)
-            </button>
+            </div>
+            <p className="text-base font-semibold text-gray-700">
+              Drop images here or <span className="text-[#2563EB]">browse</span>
+            </p>
+            <p className="mt-1 text-sm text-gray-400">JPG, PNG, GIF, WebP, BMP — up to 50 files</p>
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              accept="image/jpeg,image/png,image/gif,image/webp,image/bmp"
+              className="hidden"
+              onChange={handleFileInput}
+            />
+          </div>
+
+          {limitWarning && (
+            <p className="mt-3 text-sm text-amber-600">
+              Maximum 50 files per batch. Some files were skipped.
+            </p>
           )}
-        </div>
+
+          {/* File list */}
+          {hasFiles && (
+            <div className="mt-6 space-y-2">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-sm font-medium text-gray-600">
+                  {doneFiles.length}/{files.length} converted
+                </p>
+                <button
+                  onClick={clearAll}
+                  className="text-xs text-gray-400 hover:text-gray-600 transition"
+                >
+                  Clear all
+                </button>
+              </div>
+
+              {files.map((pf) => (
+                <FileCard key={pf.id} pf={pf} />
+              ))}
+
+              {doneFiles.length >= 2 && (
+                <button
+                  onClick={handleDownloadZip}
+                  className="mt-4 w-full flex items-center justify-center gap-2 rounded-xl bg-[#2563EB] py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  Download All as ZIP ({doneFiles.length} files)
+                </button>
+              )}
+            </div>
+          )}
+        </>
       )}
     </div>
   )
