@@ -45,7 +45,8 @@ export default function CompareMode() {
   const originalCanvasRef = useRef<HTMLCanvasElement>(null)
   const previewCanvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  const sourceCanvasRef = useRef<HTMLCanvasElement | null>(null)
+  const handleRef = useRef<HTMLDivElement>(null)
+  const originalImageRef = useRef<HTMLImageElement | null>(null)
   const currentBlobRef = useRef<Blob | null>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -59,41 +60,57 @@ export default function CompareMode() {
     }
   }, [])
 
+  // Register touchstart as non-passive so preventDefault works on mobile drag
+  useEffect(() => {
+    const handle = handleRef.current
+    if (!handle) return
+    function onTouchStart(e: TouchEvent) {
+      e.preventDefault()
+      isDraggingHandleRef.current = true
+    }
+    handle.addEventListener('touchstart', onTouchStart, { passive: false })
+    return () => handle.removeEventListener('touchstart', onTouchStart)
+  }, [imageLoaded]) // re-register after imageLoaded (handle mounts then)
+
   const renderPreview = useCallback(async (q: number) => {
-    const src = sourceCanvasRef.current
-    const preview = previewCanvasRef.current
-    if (!src || !preview) { setRendering(false); return }
+    const origImg = originalImageRef.current
+    const previewCanvas = previewCanvasRef.current
+    if (!origImg || !previewCanvas) { setRendering(false); return }
 
-    // Fresh offscreen canvas from source on every call
+    // Step 1: fresh offscreen canvas from original image element
     const offscreen = document.createElement('canvas')
-    offscreen.width = src.width
-    offscreen.height = src.height
-    offscreen.getContext('2d')!.drawImage(src, 0, 0)
+    offscreen.width = previewCanvas.width
+    offscreen.height = previewCanvas.height
+    offscreen.getContext('2d')!.drawImage(origImg, 0, 0, offscreen.width, offscreen.height)
 
+    // Step 2: compress to blob
     const blob = await new Promise<Blob | null>((resolve) =>
       offscreen.toBlob(resolve, 'image/webp', q / 100)
     )
     if (!blob) { setRendering(false); return }
 
     console.log(`Quality ${q}: ${blob.size} bytes`)
-
     currentBlobRef.current = blob
-    // Update size immediately — before canvas draw
     setCompressedSize(blob.size)
 
-    // Revoke URL immediately after drawing — no cross-render URL state
+    // Step 3: create fresh image from blob
     const url = URL.createObjectURL(blob)
     const img = new Image()
-    img.src = url
-    await new Promise<void>((resolve) => {
+    await new Promise<void>((resolve, reject) => {
       img.onload = () => resolve()
+      img.onerror = () => reject()
+      img.src = url
     })
-    URL.revokeObjectURL(url)
 
-    const ctx = preview.getContext('2d')
-    if (!ctx) { setRendering(false); return }
-    ctx.clearRect(0, 0, preview.width, preview.height)
-    ctx.drawImage(img, 0, 0, preview.width, preview.height)
+    // Step 4: draw to preview canvas — fresh context each time
+    const canvas = previewCanvasRef.current
+    if (!canvas) { URL.revokeObjectURL(url); setRendering(false); return }
+    const ctx = canvas.getContext('2d')!
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+
+    // Step 5: cleanup
+    URL.revokeObjectURL(url)
     setRendering(false)
   }, [])
 
@@ -133,12 +150,8 @@ export default function CompareMode() {
         wasScaled = true
       }
 
-      // Build off-screen source canvas
-      const src = document.createElement('canvas')
-      src.width = w
-      src.height = h
-      src.getContext('2d')!.drawImage(img, 0, 0, w, h)
-      sourceCanvasRef.current = src
+      // Store original image element for use in renderPreview
+      originalImageRef.current = img
 
       // Flush state so canvas elements mount before we draw to them
       flushSync(() => {
@@ -238,7 +251,7 @@ export default function CompareMode() {
   function handleChangeImage() {
     if (debounceRef.current) clearTimeout(debounceRef.current)
     currentBlobRef.current = null
-    sourceCanvasRef.current = null
+    originalImageRef.current = null
     setImageLoaded(false)
     setCompressedSize(0)
     setOriginalSize(0)
@@ -336,6 +349,7 @@ export default function CompareMode() {
 
         {/* Drag handle */}
         <div
+          ref={handleRef}
           style={{
             position: 'absolute',
             top: 0,
@@ -350,10 +364,6 @@ export default function CompareMode() {
             justifyContent: 'center',
           }}
           onMouseDown={(e) => {
-            e.preventDefault()
-            isDraggingHandleRef.current = true
-          }}
-          onTouchStart={(e) => {
             e.preventDefault()
             isDraggingHandleRef.current = true
           }}
