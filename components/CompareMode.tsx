@@ -105,6 +105,7 @@ export default function CompareMode() {
     // Step 4: draw to preview canvas — fresh context each time
     const canvas = previewCanvasRef.current
     if (!canvas) { URL.revokeObjectURL(url); setRendering(false); return }
+    console.log('Drawing to preview canvas', canvas.width, canvas.height, 'quality:', q)
     const ctx = canvas.getContext('2d')!
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
@@ -258,6 +259,16 @@ export default function CompareMode() {
     setRendering(false)
   }
 
+  const [containerWidth, setContainerWidth] = useState(0)
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const ro = new ResizeObserver(([entry]) => setContainerWidth(Math.round(entry.contentRect.width)))
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [imageLoaded]) // re-observe once container mounts after imageLoaded
+
   const compressionPct =
     originalSize > 0 && compressedSize > 0
       ? Math.round(((originalSize - compressedSize) / originalSize) * 100)
@@ -270,7 +281,7 @@ export default function CompareMode() {
         : compressedSize > originalSize
           ? 'text-red-500'
           : 'text-gray-800'
-  const handleLeft = `${handleFrac * 100}%`
+  const sliderPosition = Math.round(handleFrac * containerWidth)
 
   // ── Drop zone ──────────────────────────────────────────────────────────────
   if (!imageLoaded) {
@@ -326,24 +337,32 @@ export default function CompareMode() {
       {/* Comparison container */}
       <div
         ref={containerRef}
-        className="relative rounded-2xl overflow-hidden border border-gray-200 shadow-md"
-        style={{ aspectRatio, userSelect: 'none' }}
+        className="rounded-2xl border border-gray-200 shadow-md"
+        style={{ position: 'relative', overflow: 'hidden', userSelect: 'none' }}
       >
-        {/* Original (left) */}
+        {/* Original (left) — in normal flow, sizes the container */}
         <canvas
           ref={originalCanvasRef}
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+          style={{
+            display: 'block',
+            width: '100%',
+            height: 'auto',
+            border: '2px solid red', // debug — remove after confirming
+          }}
         />
 
-        {/* WebP preview (right, clipped) */}
+        {/* WebP preview (right) — absolute on top, clipped to show right portion */}
         <canvas
           ref={previewCanvasRef}
           style={{
             position: 'absolute',
-            inset: 0,
+            top: 0,
+            left: 0,
             width: '100%',
             height: '100%',
-            clipPath: `inset(0 0 0 ${handleLeft})`,
+            display: 'block',
+            clipPath: `inset(0 0 0 ${sliderPosition}px)`,
+            border: '2px solid blue', // debug — remove after confirming
           }}
         />
 
@@ -354,7 +373,7 @@ export default function CompareMode() {
             position: 'absolute',
             top: 0,
             bottom: 0,
-            left: handleLeft,
+            left: sliderPosition,
             transform: 'translateX(-50%)',
             width: 20,
             zIndex: 10,
