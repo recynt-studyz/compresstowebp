@@ -37,6 +37,7 @@ export default function CompareMode() {
   const [fileName, setFileName] = useState('')
   const [originalSize, setOriginalSize] = useState(0)
   const [compressedSize, setCompressedSize] = useState(0)
+  const [rendering, setRendering] = useState(false)
   const [scaled, setScaled] = useState(false)
   const [aspectRatio, setAspectRatio] = useState('16/9')
   const [handleFrac, setHandleFrac] = useState(0.5)
@@ -61,7 +62,7 @@ export default function CompareMode() {
   const renderPreview = useCallback(async (q: number) => {
     const src = sourceCanvasRef.current
     const preview = previewCanvasRef.current
-    if (!src || !preview) return
+    if (!src || !preview) { setRendering(false); return }
 
     // Fresh offscreen canvas from source on every call
     const offscreen = document.createElement('canvas')
@@ -72,11 +73,12 @@ export default function CompareMode() {
     const blob = await new Promise<Blob | null>((resolve) =>
       offscreen.toBlob(resolve, 'image/webp', q / 100)
     )
-    if (!blob) return
+    if (!blob) { setRendering(false); return }
 
     console.log(`Quality ${q}: ${blob.size} bytes`)
 
     currentBlobRef.current = blob
+    // Update size immediately — before canvas draw
     setCompressedSize(blob.size)
 
     // Revoke URL immediately after drawing — no cross-render URL state
@@ -89,14 +91,16 @@ export default function CompareMode() {
     URL.revokeObjectURL(url)
 
     const ctx = preview.getContext('2d')
-    if (!ctx) return
+    if (!ctx) { setRendering(false); return }
     ctx.clearRect(0, 0, preview.width, preview.height)
     ctx.drawImage(img, 0, 0, preview.width, preview.height)
+    setRendering(false)
   }, [])
 
   const debouncedRenderPreview = useCallback(
     (q: number) => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
+      setRendering(true) // show loading state immediately on slider move
       debounceRef.current = setTimeout(() => renderPreview(q), DEBOUNCE_MS)
     },
     [renderPreview]
@@ -232,17 +236,27 @@ export default function CompareMode() {
   }
 
   function handleChangeImage() {
+    if (debounceRef.current) clearTimeout(debounceRef.current)
     currentBlobRef.current = null
     sourceCanvasRef.current = null
     setImageLoaded(false)
     setCompressedSize(0)
     setOriginalSize(0)
+    setRendering(false)
   }
 
   const compressionPct =
     originalSize > 0 && compressedSize > 0
       ? Math.round(((originalSize - compressedSize) / originalSize) * 100)
       : 0
+  const compressedSizeColor =
+    compressionPct > 20
+      ? 'text-green-600'
+      : compressionPct >= 5
+        ? 'text-yellow-600'
+        : compressedSize > originalSize
+          ? 'text-red-500'
+          : 'text-gray-800'
   const handleLeft = `${handleFrac * 100}%`
 
   // ── Drop zone ──────────────────────────────────────────────────────────────
@@ -427,21 +441,66 @@ export default function CompareMode() {
         </p>
       )}
 
-      {/* File size stats */}
-      <div className="flex items-center justify-center gap-6 flex-wrap text-sm">
-        <span className="text-gray-500">
-          Original —{' '}
-          <span className="font-semibold text-gray-800">{formatBytes(originalSize)}</span>
-        </span>
-        <span className={compressionPct > 20 ? 'text-green-600' : 'text-gray-500'}>
-          Compressed —{' '}
-          <span className="font-semibold">
-            {compressedSize > 0 ? formatBytes(compressedSize) : '…'}
-          </span>
-          {compressionPct > 0 && (
-            <span className="ml-1.5 text-xs font-semibold">— {compressionPct}% smaller</span>
+      {/* Stats bar */}
+      <div className="flex items-center justify-between rounded-xl bg-gray-50 border border-gray-100 px-4 py-3">
+        {/* Left: Original */}
+        <div className="text-center min-w-[80px]">
+          <div className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-0.5">
+            Original
+          </div>
+          <div className="text-xl font-bold text-gray-800">{formatBytes(originalSize)}</div>
+        </div>
+
+        {/* Center: arrow + reduction */}
+        <div className="text-center flex-1 px-2">
+          <div className="text-gray-300 text-lg leading-none">→</div>
+          <div
+            className={`text-xs font-bold mt-1 ${
+              rendering
+                ? 'text-gray-300'
+                : compressionPct > 20
+                  ? 'text-green-600'
+                  : compressionPct >= 5
+                    ? 'text-yellow-600'
+                    : compressionPct < 0
+                      ? 'text-red-500'
+                      : 'text-gray-400'
+            }`}
+          >
+            {rendering
+              ? '…'
+              : compressedSize === 0
+                ? '…'
+                : compressionPct > 0
+                  ? `${compressionPct}% reduction`
+                  : compressionPct < 0
+                    ? `${Math.abs(compressionPct)}% larger`
+                    : 'no change'}
+          </div>
+        </div>
+
+        {/* Right: Compressed */}
+        <div className="text-center min-w-[80px]">
+          <div className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-0.5">
+            Compressed
+          </div>
+          <div
+            className={`text-xl font-bold transition-colors ${
+              rendering ? 'animate-pulse text-gray-300' : compressedSize > 0 ? compressedSizeColor : 'text-gray-300'
+            }`}
+          >
+            {rendering && compressedSize === 0 ? '…' : compressedSize > 0 ? formatBytes(compressedSize) : '…'}
+          </div>
+          {!rendering && compressedSize > 0 && (
+            <div className={`text-[11px] font-medium mt-0.5 ${compressedSizeColor}`}>
+              {compressionPct > 0
+                ? `${compressionPct}% smaller`
+                : compressionPct < 0
+                  ? `${Math.abs(compressionPct)}% larger`
+                  : 'same size'}
+            </div>
           )}
-        </span>
+        </div>
       </div>
 
       {/* Quality controls */}
@@ -475,21 +534,10 @@ export default function CompareMode() {
         </div>
 
         {/* Quality label row */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="text-sm font-medium text-gray-700 shrink-0">Quality:</span>
-            <span className="text-[#2563EB] font-semibold text-sm shrink-0">{quality}</span>
-            <span className="text-xs text-gray-500 truncate">{qualityLabel(quality)}</span>
-          </div>
-          {compressionPct > 0 && (
-            <span
-              className={`text-xs font-medium shrink-0 ml-2 ${
-                compressionPct > 20 ? 'text-green-600' : 'text-gray-500'
-              }`}
-            >
-              {compressionPct}% smaller
-            </span>
-          )}
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-sm font-medium text-gray-700 shrink-0">Quality:</span>
+          <span className="text-[#2563EB] font-semibold text-sm shrink-0">{quality}</span>
+          <span className="text-xs text-gray-500 truncate">{qualityLabel(quality)}</span>
         </div>
 
         {/* Slider */}
