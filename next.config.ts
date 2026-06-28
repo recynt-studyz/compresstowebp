@@ -8,6 +8,10 @@ const securityHeaders = [
 ]
 
 const nextConfig: NextConfig = {
+  compress: true,
+  experimental: {
+    optimizePackageImports: ['jszip'],
+  },
   async headers() {
     return [
       {
@@ -15,6 +19,14 @@ const nextConfig: NextConfig = {
         headers: securityHeaders,
       },
     ]
+  },
+  webpack(config) {
+    config.optimization.splitChunks = {
+      chunks: 'all',
+      minSize: 20000,
+      maxSize: 40000,
+    }
+    return config
   },
 }
 
