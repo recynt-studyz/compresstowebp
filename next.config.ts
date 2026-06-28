@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['jszip'],
   },
+  turbopack: {},
   async headers() {
     return [
       {
@@ -19,14 +20,6 @@ const nextConfig: NextConfig = {
         headers: securityHeaders,
       },
     ]
-  },
-  webpack(config) {
-    config.optimization.splitChunks = {
-      chunks: 'all',
-      minSize: 20000,
-      maxSize: 40000,
-    }
-    return config
   },
 }
 
