@@ -163,8 +163,8 @@ export default function Home() {
               <span className="text-3xl sm:text-4xl font-bold"> — Free Image Converter</span>
             </h1>
             <p className="mt-3 text-lg text-white/80 max-w-xl mx-auto">
-              Convert JPG, PNG, and GIF to WebP — or compress to an exact KB target. Instant,
-              free, and 100% in your browser.
+              Convert JPG to WebP, PNG to WebP, and GIF — or compress to an exact KB target.
+              Instant, free, and no upload required.
             </p>
           </div>
 
@@ -203,7 +203,7 @@ export default function Home() {
               {
                 step: '2',
                 title: 'Convert or compress to size',
-                desc: 'Use "Convert to WebP" for quality control, or switch to "Compress to Size" to hit an exact KB target like 100KB for web upload limits.',
+                desc: 'Use "Convert to WebP" for quality control, or switch to "Compress to Size" to compress your image to a specific size — set an exact KB target like 100KB for web upload limits.',
               },
               {
                 step: '3',
@@ -232,7 +232,7 @@ export default function Home() {
           </h2>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
-              { icon: '🔒', label: 'No Upload', sub: 'Stays on your device' },
+              { icon: '🔒', label: 'No Upload', sub: 'No upload required' },
               { icon: '⚡', label: 'Instant', sub: 'Browser-native speed' },
               { icon: '∞', label: 'Unlimited', sub: 'No file size cap' },
               { icon: '✓', label: 'Free', sub: 'No signup needed' },

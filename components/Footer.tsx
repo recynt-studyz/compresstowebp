@@ -8,6 +8,9 @@ export default function Footer() {
 
   return (
     <footer className="border-t border-gray-100 py-6 mt-12">
+      <p className="text-center text-xs text-gray-400 mb-3 px-4">
+        Free online tool to compress JPG, PNG and GIF images to WebP format. No upload, no signup, no limits.
+      </p>
       <div className="max-w-3xl mx-auto px-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-gray-400">
         <span>compresstowebp.com</span>
         <span>·</span>
