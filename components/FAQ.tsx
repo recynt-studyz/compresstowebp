@@ -43,6 +43,10 @@ const faqs = [
     q: 'Is this a good Squoosh alternative?',
     a: 'Yes. compresstowebp.com offers several advantages over Squoosh — bulk processing of multiple images simultaneously, a target file size mode that automatically finds the right quality level, and WebP compression that often produces better quality output at equivalent file sizes. If you need to compress a single image with advanced codec options, Squoosh is excellent. If you need to compress multiple images quickly or hit a specific file size target, compresstowebp.com is the faster choice.',
   },
+  {
+    q: 'Is compresstowebp.com a good compress-or-die alternative?',
+    a: 'Yes. compresstowebp.com offers the same client-side WebP compression as compress-or-die with no uploads, no server processing, and no file size limits. All compression happens directly in your browser. It\'s completely free with no account required.',
+  },
 ]
 
 export default function FAQ() {

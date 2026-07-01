@@ -9,16 +9,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
-      url: 'https://compresstowebp.com/about',
+      url: 'https://compresstowebp.com/privacy',
       lastModified: new Date(),
       changeFrequency: 'yearly',
       priority: 0.5,
     },
     {
-      url: 'https://compresstowebp.com/privacy',
+      url: 'https://compresstowebp.com/about',
       lastModified: new Date(),
       changeFrequency: 'yearly',
-      priority: 0.3,
+      priority: 0.5,
     },
   ]
 }
