@@ -64,7 +64,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <head>
-        <meta name="google-adsense-account" content="ca-pub-8792838105001561" />
+        <meta name="google-adsense-account" content="ca-pub-5035661017594256" />
         <link
           rel="preload"
           as="image"
@@ -77,7 +77,7 @@ export default function RootLayout({
         {children}
         <Script
           async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8792838105001561"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5035661017594256"
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
