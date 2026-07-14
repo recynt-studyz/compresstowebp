@@ -72,6 +72,18 @@ export default function RootLayout({
           type="image/webp"
           fetchPriority="high"
         />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-BS4NEK223R"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-BS4NEK223R');
+          `}
+        </Script>
       </head>
       <body className="min-h-full flex flex-col bg-white text-gray-900">
         {children}
